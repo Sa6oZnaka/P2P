@@ -1,31 +1,35 @@
-var Peer = require('simple-peer')
-var p = new Peer({ initiator: location.hash === '#1', trickle: false })
+let Peer = require('simple-peer')
+let peer1 = new Peer({ initiator: location.hash === '#1', trickle: false })
 
-p.on('error', err => console.log('error', err))
+document.getElementById('status').textContent = 'NOT CONNCECTED'
 
-p.on('signal', data => {
+peer1.on('error', err => console.log('error', err))
+
+peer1.on('signal', data => {
   console.log('SIGNAL', JSON.stringify(data))
   document.querySelector('#outgoing').textContent = JSON.stringify(data)
 })
 
 document.querySelector('form').addEventListener('submit', ev => {
   ev.preventDefault()
-  p.signal(JSON.parse(document.querySelector('#incoming').value))
+  peer1.signal(JSON.parse(document.querySelector('#incoming').value))
 })
 
-p.on('connect', () => {
+peer1.on('connect', () => {
   console.log('CONNECT')
-  p.send('whatever' + Math.random())
+  document.getElementById('status').textContent = 'CONNCECTED'
+  peer1.send('whatever' + Math.random())
 })
 
-p.on('data', data => {
+peer1.on('data', data => {
   console.log('data: ' + data)
-  document.getElementById('messages').textContent += data + '\n';
+  document.getElementById('messages').textContent += '[PEER1]' + data + '\n';
 })
-
 
 
 document.getElementById('send').addEventListener('click', function(){
 	let message = document.getElementById('message').value;
-	p.send(message);
+	peer1.send(message);
+
+	document.getElementById('messages').textContent += '[ME]' + message + '\n';
 });
