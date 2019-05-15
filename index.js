@@ -20,4 +20,12 @@ p.on('connect', () => {
 
 p.on('data', data => {
   console.log('data: ' + data)
+  document.getElementById('messages').textContent += data + '\n';
 })
+
+
+
+document.getElementById('send').addEventListener('click', function(){
+	let message = document.getElementById('message').value;
+	p.send(message);
+});
